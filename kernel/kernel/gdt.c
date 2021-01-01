@@ -24,13 +24,13 @@ uint8_t* initialize_descriptor(struct Descriptor* descriptor, uint32_t base, uin
 
 void initialize_gdt(struct GlobalDescriptorTable* table) {
 	uint32_t gdt[2];
-	intialize_descriptor(&table->selectors[0], 0, 0, 0);
-	intialize_descriptor(&table->selectors[1], 0, 0, 0);
-	intialize_descriptor(&table->selectors[2], 0, 64 * 1024 * 1024, 0x9A);
-	intialize_descriptor(&table->selectors[3], 0, 64 * 1024 * 1024, 0x92);
+	initialize_descriptor(&table->selectors[0], 0, 0, 0);
+	initialize_descriptor(&table->selectors[1], 0, 0, 0);
+	initialize_descriptor(&table->selectors[2], 0, 64 * 1024 * 1024, 0x9A);
+	initialize_descriptor(&table->selectors[3], 0, 64 * 1024 * 1024, 0x92);
 	gdt[0] = (uint32_t) table;
-	gdt[1] = sizeof(GlobalDescriptorTable) << 16;
-	asm volatile (
-		"lgdt (%0)": :"p" (((uint8_t*) gdt) + 2)
+	gdt[1] = sizeof(struct GlobalDescriptorTable) << 16;
+	asm (
+		"lgdt (%0)": :"r" (((uint8_t*) gdt) + 2)
 	);
 }
